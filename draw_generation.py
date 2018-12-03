@@ -14,7 +14,6 @@ import os
 try:
     import dxfwrite
 except ImportError:
-    # if dxfwrite is not 'installed' append parent dir of __file__ to sys.path
     curdir = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, os.path.abspath(os.path.join(curdir, os.path.pardir)))
 
@@ -23,7 +22,7 @@ from dxfwrite import DXFEngine as dxf
 
 edges = []
 num_edges = 0
-num_points = 100
+num_points = 1000
 name = 'tree.dxf'
 dwg = dxf.drawing(name)
 painted = [0 for i in range(0, num_points + 1)]
@@ -62,7 +61,20 @@ def draw(a, b):
     if painted[b] == 0:
         dwg.add(dxf.circle(center=(points_X[b],points_Y[b]), radius=.5))
         painted[b] = 1
-    dwg.add(dxf.line((points_X[a], (points_Y[a] + .5)), (points_X[b], (points_Y[b] - .5)), color=2))
+    r_1 = r_2 = r_3 = r_4 = 0
+    if points_X[a] <= points_X[b]:
+        r_1 = 0.5
+        r_3 = -0.5
+    else :
+        r_1 = -0.5
+        r_3 = 0.5
+    if points_Y[a] <= points_Y[b]:
+        r_2 = 0.5
+        r_4 = -0.5
+    else :
+        r_2 = -0.5
+        r_4 = 0.5
+    dwg.add(dxf.line((points_X[a] + r_1, points_Y[a] + r_2), (points_X[b] + r_3, points_Y[b] + r_4), color=2))
 
 random.seed(a = None)
 for i in range(0, num_points):
@@ -77,12 +89,12 @@ for i in range(0, num_points):
         if i != j:
             x = (points_X[i] - points_X[j])
             y = (points_Y[i] - points_Y[j])
-            edges.append((math.sqrt(x * x + y * y), (i, j)))
+            edges.append((math.sqrt(x * x + y * y), i, j))
             num_edges += 1
 edges.sort(key=operator.itemgetter(0))
 G = DisjoinSet(num_points)
 for i in range(num_edges):
-    for cost, (i, j) in edges:
+    for cost, i, j in edges:
         root_x = G.find(i)
         root_y = G.find(j)
         if root_x != root_y:
