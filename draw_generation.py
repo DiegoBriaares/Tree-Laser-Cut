@@ -22,7 +22,7 @@ from dxfwrite import DXFEngine as dxf
 
 edges = []
 num_edges = 0
-num_points = 1000
+num_points = 300
 name = 'tree.dxf'
 dwg = dxf.drawing(name)
 painted = [0 for i in range(0, num_points + 1)]
@@ -56,10 +56,10 @@ class DisjoinSet(object):
 
 def draw(a, b):
     if painted[a] == 0:
-        dwg.add(dxf.circle(center=(points_X[a],points_Y[a]), radius=.5))
+        dwg.add(dxf.circle(center=(points_X[a],points_Y[a]), radius = .7, color = 141))
         painted[a] = 1
     if painted[b] == 0:
-        dwg.add(dxf.circle(center=(points_X[b],points_Y[b]), radius=.5))
+        dwg.add(dxf.circle(center=(points_X[b],points_Y[b]), radius = .7, color = 141))
         painted[b] = 1
     r_1 = r_2 = r_3 = r_4 = 0
     if points_X[a] <= points_X[b]:
@@ -74,7 +74,7 @@ def draw(a, b):
     else :
         r_2 = -0.5
         r_4 = 0.5
-    dwg.add(dxf.line((points_X[a] + r_1, points_Y[a] + r_2), (points_X[b] + r_3, points_Y[b] + r_4), color=2))
+    dwg.add(dxf.line((points_X[a] + r_1, points_Y[a] + r_2), (points_X[b] + r_3, points_Y[b] + r_4), color=61))
 
 random.seed(a = None)
 for i in range(0, num_points):
